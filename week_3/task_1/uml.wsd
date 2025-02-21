@@ -1,0 +1,25 @@
+@startuml
+class Roman {
+    - ARABIC_MIN: int = 1
+    - ARABIC_MAX: int = 3999
+    - ROMAN_MIN: str = "I"
+    - ROMAN_MAX: str = "MMMCMXCIX"
+    - LETTERS: list = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+    - NUMBERS: list = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+    - _arabic: int
+
+    + __init__(value: int or str)
+    + __add__(other: Roman or int) : Roman
+    + __sub__(other: Roman or int) : Roman
+    + __mul__(other: Roman or int) : Roman
+    + __floordiv__(other: Roman or int) : Roman
+    + __truediv__(other: Roman or int) : Roman
+    + __str__() : str
+    + __check_arabic(value: int)
+    + __check_roman(value: str)
+    + arabic() : int
+    + to_arabic(roman: str) : int
+    + to_roman(arabic: int) : str
+}
+
+@enduml
