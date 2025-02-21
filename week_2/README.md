@@ -21,12 +21,12 @@ class Shape(ABC):
     """Абстрактный базовый класс для всех фигур."""
 
     @abstractmethod
-    def perimeter(self):
+    def perimeter(self) -> float:
         """Абстрактный метод для вычисления периметра фигуры."""
         pass
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         """Абстрактный метод для строкового представления фигуры."""
         pass
 
@@ -34,29 +34,40 @@ class Shape(ABC):
 class Triangle(Shape):
     """Класс, представляющий простой треугольник."""
 
-    def __init__(self, side1, side2, side3):
+    def __init__(self, side1: float, side2: float, side3: float):
         """
         Инициализирует треугольник с тремя сторонами.
 
-        :param side1: Длина первой стороны.
-        :param side2: Длина второй стороны.
-        :param side3: Длина третьей стороны.
+        Parameters
+        ----------
+        side1(float): длина первой стороны
+        side2(float): длина второй стороны
+        side3(float): длина третьей стороны
+
         """
         self._side1 = side1  # Защищённый атрибут (инкапсуляция)
         self._side2 = side2  # Защищённый атрибут (инкапсуляция)
         self._side3 = side3  # Защищённый атрибут (инкапсуляция)
 
-    def perimeter(self):
-        """Вычисляет периметр треугольника.
+    def perimeter(self) -> float:
+        """
+        Вычисляет периметр треугольника.
 
-        :return: Периметр треугольника.
+        Returns
+        -------
+        (float): периметр треугольника.
+
         """
         return self._side1 + self._side2 + self._side3
 
-    def __str__(self):
-        """Возвращает строковое представление треугольника с полной информацией.
+    def __str__(self) -> str:
+        """
+        Строковое представление треугольника.
 
-        :return: Строка с информацией о сторонах и периметре.
+        Returns
+        -------
+        (str): строка с информацией о сторонах и периметре треугольника.
+
         """
         return (
             f"Треугольник:\n"
@@ -68,32 +79,45 @@ class Triangle(Shape):
 class RightTriangle(Triangle):
     """Класс, представляющий прямоугольный треугольник."""
 
-    def __init__(self, side1, side2):
+    def __init__(self, side1: float, side2: float):
         """
         Инициализирует прямоугольный треугольник с двумя катетами.
 
-        :param side1: Длина первого катета.
-        :param side2: Длина второго катета.
+        Parameters
+        ----------
+
+        side1(float): длина первого катета
+        side2(float): длина второго катета
+
         """
 
         Triangle.__init__(self, side1, side2, side3 = math.sqrt(side1**2 + side2**2))
 
-    def perimeter(self):
-        """Вычисляет периметр прямоугольного треугольника.
+    def perimeter(self) -> float:
+        """
+        Вычисляет периметр прямоугольного треугольника.
 
-        :return: Периметр прямоугольного треугольника.
+        Returns
+        -------
+        (float): периметр прямоугольного треугольника.
+
         """
         return self._side1 + self._side2 + self._side3
 
-    def radius(self):
-        """Вычисляет радиус описанной окружности.
+    def radius(self) -> float:
+        """
+        Вычисляет радиус описанной окружности.
 
-        :return: Радиус описанной окружности.
+        Returns
+        -------
+        (float): радиус описанной окружности прямоугольного треугольника.
+
         """
         return self._side3 / 2
 
-    def corners(self):
-        """Вычисляет углы прямоугольного треугольника.
+    def corners(self) -> tuple[float, float, float]:
+        """
+        Вычисляет углы прямоугольного треугольника.
 
         :return: Кортеж из трёх углов треугольника в градусах.
         """
@@ -102,10 +126,14 @@ class RightTriangle(Triangle):
         corner3 = 90 - corner2
         return corner1, corner2, corner3
 
-    def __str__(self):
-        """Возвращает строковое представление прямоугольного треугольника с полной информацией.
+    def __str__(self) -> str:
+        """
+        Возвращает строковое представление прямоугольного треугольника с полной информацией.
 
-        :return: Строка с информацией о катетах, гипотенузе, периметре, радиусе и углах.
+        Returns
+        -------
+        (str): Строка с информацией о катетах, гипотенузе, периметре, радиусе и углах.
+
         """
         return (
             f"Прямоугольный треугольник:\n"
@@ -122,12 +150,15 @@ class ShapeCollection:
 
     def __init__(self):
         """Инициализирует коллекцию фигур."""
-        self._shapes = []  # Список для хранения фигур (композиция)
+        self._shapes: list = []
 
     def add_shape(self, shape):
         """Добавляет фигуру в коллекцию.
 
-        :param shape: Фигура (объект класса Shape или его подклассов).
+        Parameters
+        ----------
+        shape: Фигура (объект класса Shape или его подклассов).
+
         """
         self._shapes.append(shape)
 
@@ -138,11 +169,11 @@ class ShapeCollection:
             print(shape)
 
 # Пример использования
-triangle = Triangle(3, 4, 5)
-right_triangle = RightTriangle(6, 8)
+triangle: Triangle = Triangle(3, 4, 5)
+right_triangle: RightTriangle = RightTriangle(6, 8)
 
 # Создаём коллекцию и добавляем фигуры
-collection = ShapeCollection()
+collection: ShapeCollection = ShapeCollection()
 collection.add_shape(triangle)
 collection.add_shape(right_triangle)
 
