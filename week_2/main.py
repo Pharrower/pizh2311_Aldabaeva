@@ -1,17 +1,18 @@
 import math
 from abc import ABC, abstractmethod
+from typing import Literal
 
 # Абстрактный базовый класс Shape
 class Shape(ABC):
     """Абстрактный базовый класс для всех фигур."""
 
     @abstractmethod
-    def perimeter(self):
+    def perimeter(self) -> float:
         """Абстрактный метод для вычисления периметра фигуры."""
         pass
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         """Абстрактный метод для строкового представления фигуры."""
         pass
 
@@ -19,7 +20,7 @@ class Shape(ABC):
 class Triangle(Shape):
     """Класс, представляющий простой треугольник."""
 
-    def __init__(self, side1, side2, side3):
+    def __init__(self, side1: float, side2: float, side3: float):
         """
         Инициализирует треугольник с тремя сторонами.
 
@@ -31,14 +32,14 @@ class Triangle(Shape):
         self._side2 = side2  # Защищённый атрибут (инкапсуляция)
         self._side3 = side3  # Защищённый атрибут (инкапсуляция)
 
-    def perimeter(self):
+    def perimeter(self) -> float:
         """Вычисляет периметр треугольника.
 
         :return: Периметр треугольника.
         """
         return self._side1 + self._side2 + self._side3
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Возвращает строковое представление треугольника с полной информацией.
 
         :return: Строка с информацией о сторонах и периметре.
@@ -53,41 +54,41 @@ class Triangle(Shape):
 class RightTriangle(Triangle):
     """Класс, представляющий прямоугольный треугольник."""
 
-    def __init__(self, side1, side2):
+    def __init__(self, side1: float, side2: float):
         """
         Инициализирует прямоугольный треугольник с двумя катетами.
 
         :param side1: Длина первого катета.
         :param side2: Длина второго катета.
         """
-        # Гипотенуза вычисляется по теореме Пифагора
+
         Triangle.__init__(self, side1, side2, side3 = math.sqrt(side1**2 + side2**2))
 
-    def perimeter(self):
+    def perimeter(self) -> float:
         """Вычисляет периметр прямоугольного треугольника.
 
         :return: Периметр прямоугольного треугольника.
         """
         return self._side1 + self._side2 + self._side3
 
-    def radius(self):
+    def radius(self) -> float:
         """Вычисляет радиус описанной окружности.
 
         :return: Радиус описанной окружности.
         """
-        return self._side3 / 2  # Для прямоугольного треугольника R = гипотенуза / 2
+        return self._side3 / 2
 
-    def corners(self):
+    def corners(self) -> tuple[Literal[90], float, float]:
         """Вычисляет углы прямоугольного треугольника.
 
         :return: Кортеж из трёх углов треугольника в градусах.
         """
-        corner1 = 90  # Прямой угол
-        corner2 = math.degrees(math.atan(self._side1 / self._side2))  # Угол между side2 и гипотенузой
-        corner3 = 90 - corner2  # Третий угол
+        corner1 = 90  
+        corner2 = math.degrees(math.atan(self._side1 / self._side2)) 
+        corner3 = 90 - corner2
         return corner1, corner2, corner3
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Возвращает строковое представление прямоугольного треугольника с полной информацией.
 
         :return: Строка с информацией о катетах, гипотенузе, периметре, радиусе и углах.
@@ -107,7 +108,7 @@ class ShapeCollection:
 
     def __init__(self):
         """Инициализирует коллекцию фигур."""
-        self._shapes = []  # Список для хранения фигур (композиция)
+        self._shapes: list = []
 
     def add_shape(self, shape):
         """Добавляет фигуру в коллекцию.
@@ -118,18 +119,30 @@ class ShapeCollection:
 
     def print_all_shapes(self):
         """Выводит информацию о всех фигурах в коллекции."""
-        print("Коллекция фигур:")
+        print("Список добавленных фигур:")
         for shape in self._shapes:
-            print(shape)  # Используем __str__ для вывода полной информации
+            print(shape)
 
 # Пример использования
-triangle = Triangle(3, 4, 5)
-right_triangle = RightTriangle(6, 8)
+triangle: Triangle = Triangle(3, 4, 5)
+right_triangle: RightTriangle = RightTriangle(6, 8)
 
 # Создаём коллекцию и добавляем фигуры
-collection = ShapeCollection()
+collection: ShapeCollection = ShapeCollection()
 collection.add_shape(triangle)
 collection.add_shape(right_triangle)
 
 # Выводим информацию о всех фигурах в коллекции
 collection.print_all_shapes()
+
+#Результат
+#Коллекция фигур:
+#Треугольник:
+  #Стороны: 3, 4, 5
+  #Периметр: 12
+#Прямоугольный треугольник:
+  #Катеты: 6, 8
+  #Гипотенуза: 10.0
+  #Периметр: 24.0
+  #Радиус описанной окружности: 5.0
+  #Углы: (90, 36.86989764584402, 53.13010235415598)
