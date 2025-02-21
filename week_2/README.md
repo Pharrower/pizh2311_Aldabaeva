@@ -23,12 +23,10 @@ class Shape(ABC):
     @abstractmethod
     def perimeter(self) -> float:
         """Абстрактный метод для вычисления периметра фигуры."""
-        pass
 
     @abstractmethod
     def __str__(self) -> str:
         """Абстрактный метод для строкового представления фигуры."""
-        pass
 
 # Базовый класс Triangle (наследует Shape)
 class Triangle(Shape):
@@ -191,3 +189,6 @@ collection.print_all_shapes()
   Периметр: 24.0
   Радиус описанной окружности: 5.0
   Углы: (90, 36.86989764584402, 53.13010235415598)
+
+**UML**
+<img src="./UML.png">

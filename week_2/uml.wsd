@@ -1,0 +1,42 @@
+@startuml UML
+' Абстрактный класс Shape
+abstract class Shape {
+    + {abstract} perimeter(): float
+    + {abstract} __str__(): str
+}
+
+' Класс Triangle
+class Triangle {
+    - _side1: float
+    - _side2: float
+    - _side3: float
+    + __init__(side1: float, side2: float, side3: float)
+    + perimeter(): float
+    + __str__(): str
+}
+
+' Класс RightTriangle
+class RightTriangle {
+    + __init__(side1: float, side2: float)
+    + perimeter(): float
+    + radius(): float
+    + corners(): tuple[float, float, float]
+    + __str__(): str
+}
+
+' Класс ShapeCollection
+class ShapeCollection {
+    - _shapes: list[Shape]
+    + __init__()
+    + add_shape(shape: Shape)
+    + print_all_shapes()
+}
+
+' Наследование
+Shape <|-- Triangle
+Triangle <|-- RightTriangle
+
+' Композиция
+ShapeCollection "1" *-- "many" Shape
+
+@enduml
