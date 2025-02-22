@@ -191,4 +191,4 @@ collection.print_all_shapes()
   Углы: (90, 36.86989764584402, 53.13010235415598) <br>
 
 **UML** <br>
-<img src="./UML.png">
+<img src="./UML/UML.png">
