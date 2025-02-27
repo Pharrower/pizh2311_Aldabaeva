@@ -63,7 +63,7 @@ class Roman:
             return Roman(self._arabic + other)
         else:
             raise TypeError("Не могу сложить римское число с {0}".
-                            format(type(value)))
+                            format(type(other)))
 
     def __sub__(self, other):
         """Создать новый объект как разность self и other.
@@ -81,7 +81,7 @@ class Roman:
             return Roman(self._arabic - other)
         else:
             raise TypeError("Не могу вычесть из римского числа {0}".
-                            format(type(value)))
+                            format(type(other)))
 
     def __mul__(self, other):
         """Создать новый объект как произведение self и other.
@@ -99,7 +99,7 @@ class Roman:
             return Roman(self._arabic * other)
         else:
             raise TypeError("Не могу умножить римское число на {0}".
-                            format(type(value)))
+                            format(type(other)))
 
     def __floordiv__(self, other):
         """Создать новый объект как частное self и other.
@@ -117,7 +117,7 @@ class Roman:
             return Roman(self._arabic // other)
         else:
             raise TypeError("Не могу разделить римское число на {0}".
-                            format(type(value)))
+                            format(type(other)))
 
     def __truediv__(self, other):
         """Создать новый объект как частное self и other.
