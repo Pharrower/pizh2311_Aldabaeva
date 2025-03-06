@@ -1,0 +1,14 @@
+@startuml
+class LineSegment {
+    - start: float
+    - end: float
+    + __init__(start: float, end: float)
+    + __str__(): str
+    + __add__(other: LineSegment): LineSegment
+    + __sub__(other: LineSegment): LineSegment
+    + length(): float
+    + contains(value: float): bool
+    + save(filename: str)
+    + load(filename: str)
+}
+@enduml
