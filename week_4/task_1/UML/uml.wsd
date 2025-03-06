@@ -1,0 +1,31 @@
+@startuml
+class TimeDeposit {
+    - name: str
+    - _interest_rate: float
+    - _period_limit: tuple[int, int]
+    - _sum_limit: tuple[float, float]
+    + __init__(name, interest_rate, period_limit, sum_limit)
+    + __str__(): str
+    + currency: str
+    - _check_self(): void
+    - _check_user_params(initial_sum, period): void
+    + get_profit(initial_sum, period): float
+    + get_sum(initial_sum, period): float
+}
+
+class BonusTimeDeposit {
+    - _bonus: dict[str, float]
+    + __init__(name, interest_rate, period_limit, sum_limit, bonus)
+    + __str__(): str
+    - _check_self(): void
+    + get_profit(initial_sum, period): float
+}
+
+class CompoundTimeDeposit {
+    + __str__(): str
+    + get_profit(initial_sum, period): float
+}
+
+TimeDeposit <|-- BonusTimeDeposit
+TimeDeposit <|-- CompoundTimeDeposit
+@enduml
