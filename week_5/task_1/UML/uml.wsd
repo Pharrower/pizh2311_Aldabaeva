@@ -1,0 +1,27 @@
+@startuml
+class LineSegment {
+    - start: float
+    - end: float
+    + __init__(start: float, end: float)
+    + __str__(): str
+    + __add__(other: LineSegment): LineSegment
+    + __sub__(other: LineSegment): LineSegment | None
+    + length(): float
+    + contains(value: float): str
+    + save(filename: str)
+    + load(filename: str)
+}
+
+class LineSegmentCollection {
+    - _data: List[LineSegment]
+    + __init__()
+    + __str__(): str
+    + __getitem__(index: int): LineSegment
+    + add(segment: LineSegment)
+    + remove(index: int)
+    + save(filename: str)
+    + load(filename: str)
+}
+
+LineSegmentCollection "1" *-- "0..*" LineSegment : contains
+@enduml
