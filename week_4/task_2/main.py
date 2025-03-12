@@ -1,4 +1,3 @@
-from math import pi
 from LineSegment import LineSegment
 
 def main():
@@ -13,7 +12,7 @@ def main():
     # Вывод информации о интервалах
     print("\nВведенные интервалы:")
     print("Интервал 1:", segment1)
-    print("Интервал 2:", segment2)
+    print("Интервал 2:", segment2) 
 
     # Операции с интервалами
     sum_segment = segment1 + segment2

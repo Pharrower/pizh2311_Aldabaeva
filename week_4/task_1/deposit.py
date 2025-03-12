@@ -125,8 +125,8 @@ class BonusTimeDeposit(TimeDeposit):
         Бонус (мин. сумма): 2,000
         """
         return (super().__str__() + "\n"
-                f"Бонус (%):          {self._bonus['percent']}\n"
-                f"Бонус (мин. сумма): {self._bonus['sum']:,.2f}")
+                f"Бонус (%):          {self._bonus}\n"
+                f"Бонус (мин. сумма): {self._bonus:,.2f}")
 
     def _check_self(self):
         """Проверить, что данные депозита являются допустимыми.
