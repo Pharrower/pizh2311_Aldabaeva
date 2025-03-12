@@ -39,6 +39,8 @@ def main():
                 print("Ошибка: Введите корректный индекс.")
         elif choice == '4':
             filename = input("Введите имя файла для сохранения: ")
+            if filename.find('.json') == -1:
+                filename += '.json'
             collection.save(filename)
         elif choice == '5':
             filename = input("Введите имя файла для загрузки: ")
