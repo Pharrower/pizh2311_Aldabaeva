@@ -24,13 +24,10 @@ def main():
             print("\nТекущая коллекция интервалов:")
             print(collection)
         elif choice == '2':
-            try:
-                start = float(input("Введите начало интервала: "))
-                end = float(input("Введите конец интервала: "))
-                segment = LineSegment(start, end)
-                collection.add(segment)
-            except ValueError as e:
-                print(f"Ошибка: {e}")
+            start = float(input("Введите начало интервала: "))
+            end = float(input("Введите конец интервала: "))
+            segment = LineSegment(start, end)
+            collection.add(segment)
         elif choice == '3':
             try:
                 index = int(input("Введите индекс интервала для удаления: "))
