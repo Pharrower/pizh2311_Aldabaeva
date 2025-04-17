@@ -47,7 +47,7 @@
 ***cmake --build . --target lab1 && bin/lab1*** или воспользоваться IDE
 
 ## Примечание
- - Переполнение - Undefined Behavior
+ - Переполнение - Undefined Behavior https://en.cppreference.com/w/cpp/language/ub
 
 
 ## Дополнительно
