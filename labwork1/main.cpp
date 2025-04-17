@@ -1,5 +1,6 @@
-#include <fstream>  // Для работы с файлами
-#include <string>   // Для использования строк
+#include <fstream> 
+#include <string>   
+#include <iostream> 
 
 int main(int argc, char* argv[]) {
     // Проверяем, есть ли аргументы командной строки
@@ -62,11 +63,11 @@ int main(int argc, char* argv[]) {
         }
 
         // Вывод результатов
-        if (count_lines) printf("%d ", lines);  
-        if (count_words) printf("%d ", words);
-        if (count_bytes) printf("%d ", bytes);
-        if (count_chars) printf("%d ", chars);
-        printf("%s\n", filename.c_str()); 
+        if (count_lines) std::cout << lines << " ";
+        if (count_words) std::cout << words << " ";
+        if (count_bytes) std::cout << bytes << " ";
+        if (count_chars) std::cout << chars << " ";
+        std::cout << filename << "\n";
 
         file.close();
     }
