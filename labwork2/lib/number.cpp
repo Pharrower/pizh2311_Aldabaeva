@@ -1,177 +1,168 @@
 #include "number.h"
+#include <string>
+#include <algorithm>
 
-// Конвертация из uint32_t
 uint2022_t from_uint(uint32_t i) {
     uint2022_t result;
     result.parts[0] = i;
-
     return result;
 }
 
-// Конвертация из строки
 uint2022_t from_string(const char* buff) {
-    uint2022_t result = from_uint(0);
+    uint2022_t result;
+    std::string str(buff);
 
-    while (*buff) {
-        if (isdigit(*buff)) {
-            uint32_t digit = *buff - '0';
-            result = result * from_uint(10) + from_uint(digit);
+    for (char c : str) {
+        if (c < '0' || c > '9') {
+            return result;
+        }
+    }
+
+    for (size_t i = 0; i < str.size(); i++) {
+        uint32_t carry = 0;
+        for (size_t j = 0; j < result.NUM_WORDS; j++) {
+            uint64_t value = (uint64_t)result.parts[j] * 10 + carry;
+            result.parts[j] = value & 0xFFFFFFFF;
+            carry = value >> 32;
         }
 
-        buff++;
+
+        carry = str[i] - '0';
+        for (size_t j = 0; j < result.NUM_WORDS && carry > 0; j++) {
+            uint64_t value = (uint64_t)result.parts[j] + carry;
+            result.parts[j] = value & 0xFFFFFFFF;
+            carry = value >> 32;
+        }
     }
 
     return result;
 }
-
-// Оператор сложения
+bool operator<(const uint2022_t& lhs, const uint2022_t& rhs) {
+    for (int i = lhs.NUM_WORDS - 1; i >= 0; i--) {
+        if (lhs.parts[i] < rhs.parts[i]) return true;
+        if (lhs.parts[i] > rhs.parts[i]) return false;
+    }
+    return false;
+}
 uint2022_t operator+(const uint2022_t& lhs, const uint2022_t& rhs) {
     uint2022_t result;
-    uint64_t carry = 0; // Перенос
+    uint32_t carry = 0;
 
-    for (int i = 0; i < 64; i++) {
+    for (size_t i = 0; i < result.NUM_WORDS; i++) {
         uint64_t sum = (uint64_t)lhs.parts[i] + rhs.parts[i] + carry;
-        result.parts[i] = static_cast<uint32_t>(sum);
+        result.parts[i] = sum & 0xFFFFFFFF;
         carry = sum >> 32;
     }
 
-    result.parts[63] &= 0x3F;
-    return result;
-}
-
-// Оператор вычитания
-uint2022_t operator-(const uint2022_t& lhs, const uint2022_t& rhs) {
-    uint2022_t result;
-    uint64_t borrow = 0; // Заём
-
-    for (int i = 0; i < 64; i++) {
-        uint64_t rhs_val = (uint64_t)rhs.parts[i] + borrow;
-
-        if (lhs.parts[i] >= rhs_val) {
-            result.parts[i] = lhs.parts[i] - rhs_val;
-            borrow = 0;
-        }
-        else {
-            result.parts[i] = (uint64_t)0x100000000 + lhs.parts[i] - rhs_val;
-            borrow = 1;
-        }
+    if (carry != 0) {
+        throw std::overflow_error("Overflow in uint2022_t addition");
     }
 
-    result.parts[63] &= 0x3F;
     return result;
 }
 
-// Оператор умножения
+uint2022_t operator-(const uint2022_t& lhs, const uint2022_t& rhs) {
+    if (lhs < rhs) {
+        throw std::underflow_error("Underflow in uint2022_t subtraction");
+    }
+
+    uint2022_t result;
+    uint32_t borrow = 0;
+
+    for (size_t i = 0; i < result.NUM_WORDS; i++) {
+        uint64_t diff = (uint64_t)lhs.parts[i] - rhs.parts[i] - borrow;
+        result.parts[i] = diff & 0xFFFFFFFF;
+        borrow = (diff >> 63) & 1;
+    }
+
+    return result;
+}
+
+
 uint2022_t operator*(const uint2022_t& lhs, const uint2022_t& rhs) {
     uint2022_t result;
 
-    for (int i = 0; i < 64; i++) {
+    for (size_t i = 0; i < lhs.NUM_WORDS; i++) {
         uint64_t carry = 0;
-
-        for (int j = 0; j < 64 - i; j++) {
+        for (size_t j = 0; j < rhs.NUM_WORDS && i + j < result.NUM_WORDS; j++) {
             uint64_t product = (uint64_t)lhs.parts[i] * rhs.parts[j] + result.parts[i + j] + carry;
-            result.parts[i + j] = static_cast<uint32_t>(product);
+            result.parts[i + j] = product & 0xFFFFFFFF;
             carry = product >> 32;
         }
+
+
+        if (i + rhs.NUM_WORDS < result.NUM_WORDS && carry != 0) {
+            uint64_t sum = (uint64_t)result.parts[i + rhs.NUM_WORDS] + carry;
+            result.parts[i + rhs.NUM_WORDS] = sum & 0xFFFFFFFF;
+            if ((sum >> 32) != 0) {
+                throw std::overflow_error("Overflow in uint2022_t multiplication");
+            }
+        }
+        else if (i + rhs.NUM_WORDS >= result.NUM_WORDS && carry != 0) {
+            throw std::overflow_error("Overflow in uint2022_t multiplication");
+        }
     }
 
-    result.parts[63] &= 0x3F;
     return result;
 }
-
-// Оператор деления
-uint2022_t operator/(const uint2022_t& lhs, const uint2022_t& rhs) {
-    if (rhs == from_uint(0)) return from_uint(0);
-    uint2022_t dividend = lhs;
-    uint2022_t divisor = rhs;
-    uint2022_t quotient = from_uint(0);
-    uint2022_t current = from_uint(0);
-
-    for (int i = 2021; i >= 0; --i) {
-        current = current * from_uint(2);
-
-        int part = i / 32;
-        int bit = i % 32;
-        uint32_t bit_value = (dividend.parts[part] >> bit) & 1;
-        if (bit_value) {
-            current = current + from_uint(1);
-        }
-
-        if (current >= divisor) {
-            current = current - divisor;
-            quotient.parts[part] |= (1 << bit);
-        }
-    }
-
-    quotient.parts[63] &= 0x3F;
-    return quotient;
-}
-
-// Операторы сравнения
-
 bool operator==(const uint2022_t& lhs, const uint2022_t& rhs) {
-    for (int i = 0; i < 64; i++) {
-        if (lhs.parts[i] != rhs.parts[i]) return false;
+    for (size_t i = 0; i < lhs.NUM_WORDS; i++) {
+        if (lhs.parts[i] != rhs.parts[i]) {
+            return false;
+        }
     }
-
     return true;
 }
 
+uint2022_t operator/(const uint2022_t& lhs, const uint2022_t& rhs) {
+    if (rhs == uint2022_t()) {
+
+        return uint2022_t();
+    }
+
+    uint2022_t quotient;
+    uint2022_t remainder = lhs;
+
+    while (!(remainder < rhs)) {
+        uint2022_t temp_divisor = rhs;
+        uint2022_t multiple = from_uint(1);
+
+        //                   ,         "       "          
+        while (!(remainder < (temp_divisor + temp_divisor))) {
+            temp_divisor = temp_divisor + temp_divisor;
+            multiple = multiple + multiple;
+        }
+
+        remainder = remainder - temp_divisor;
+        quotient = quotient + multiple;
+    }
+
+    return quotient;
+}
 bool operator!=(const uint2022_t& lhs, const uint2022_t& rhs) {
     return !(lhs == rhs);
 }
 
-// Вспомогательная функция для сравнения
-int compare(const uint2022_t& a, const uint2022_t& b) {
-    for (int i = 63; i >= 0; i--) {
-        if (a.parts[i] < b.parts[i]) return -1;
-        if (a.parts[i] > b.parts[i]) return 1;
-    }
-
-    return 0;
-}
-
-bool operator>(const uint2022_t& lhs, const uint2022_t& rhs) {
-    return compare(lhs, rhs) > 0;
-}
-
-bool operator>=(const uint2022_t& lhs, const uint2022_t& rhs) {
-    return compare(lhs, rhs) >= 0;
-}
-
-bool operator<(const uint2022_t& lhs, const uint2022_t& rhs) {
-    return compare(lhs, rhs) < 0;
-}
-
-bool operator<=(const uint2022_t& lhs, const uint2022_t& rhs) {
-    return compare(lhs, rhs) <= 0;
-}
-
-// Вывод
 std::ostream& operator<<(std::ostream& stream, const uint2022_t& value) {
-    if (value == from_uint(0)) {
+    if (value == uint2022_t()) {
         stream << "0";
-
         return stream;
     }
 
-    uint2022_t num = value;
-    char buffer[610] = { 0 };
-    int index = 0;
+    uint2022_t tmp = value;
+    std::string result;
 
-    while (num != from_uint(0)) {
-        uint2022_t div = from_uint(10);
-        uint2022_t quot = num / div;
-        uint2022_t rem = num - quot * div;
-
-        buffer[index++] = '0' + rem.parts[0];
-        num = quot;
+    while (tmp != uint2022_t()) {
+        uint32_t remainder = 0;
+        for (int i = tmp.NUM_WORDS - 1; i >= 0; i--) {
+            uint64_t value = ((uint64_t)remainder << 32) + tmp.parts[i];
+            tmp.parts[i] = value / 10;
+            remainder = value % 10;
+        }
+        result.push_back(remainder + '0');
     }
 
-    // Вывод в обратном порядке
-    for (int i = index - 1; i >= 0; i--) {
-        stream << buffer[i];
-    }
-
+    std::reverse(result.begin(), result.end());
+    stream << result;
     return stream;
 }
