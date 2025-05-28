@@ -9,25 +9,35 @@ protected:
     string date;
     double amount;
     string description;
+    static int objectCount; // Статический счётчик объектов
 
 public:
     Payment() : date("01.01.1970"), amount(0.0), description("Без описания") {
     cout << "Платёж: конструктор по умолчанию" << endl;
+    objectCount++; // Увеличиваем счётчик при создании объекта
     }
 
     Payment(string d, double a, string desc) : date(d), amount(a), description(desc) {
     cout << "Платёж: конструктор с параметрами" << endl;
+    objectCount++; // Увеличиваем счётчик
     }
 
     Payment(const Payment &p) : date(p.date), amount(p.amount), description(p.description) {
     cout << "Платёж: конструктор копирования" << endl;
+    objectCount++; // Увеличиваем счётчик
     }
 
     virtual ~Payment() {
     cout << "Платёж: деструктор" << endl;
+    objectCount--; // Уменьшаем счётчик при уничтожении объекта
     }
 
     virtual void print() const = 0; // Чисто виртуальная функция
+
+    // Статический метод для получения количества объектов
+    static int getObjectCount() {
+    return objectCount;
+    }
 
     // Общие методы
     string getDate() const { return date; }
@@ -39,6 +49,9 @@ public:
     string getDescription() const { return description; }
     void setDescription(string desc) { description = desc; }
 };
+
+// Инициализация статического члена класса
+int Payment::objectCount = 0;
 
 // Класс-наследник 1: Доходы
 class Income : public Payment {
@@ -60,7 +73,8 @@ public:
     }
 
     void print() const override {
-    cout << "Дата: " << date << ", Сумма: " << amount << ", Описание: " << description << ", Источник: " << source << endl;
+    cout << "Дата: " << date << ", Сумма: " << amount << ", Описание: "
+    << description << ", Источник: " << source << endl;
     }
 };
 
@@ -84,7 +98,8 @@ public:
     }
 
     void print() const override {
-    cout << "Дата: " << date << ", Сумма: " << amount << ", Описание: " << description << ", Категория: " << category << endl;
+    cout << "Дата: " << date << ", Сумма: " << amount << ", Описание: "
+    << description << ", Категория: " << category << endl;
     }
 };
 
@@ -94,7 +109,7 @@ private:
     string card;
     string name;
     Payment* payments[10];
-    static int paymentCount;
+    static int paymentCount; // Статический счётчик объектов в массиве
 
 public:
     AccountBook() : card("Нет карты"), name("Нет имени") {
@@ -113,26 +128,33 @@ public:
     }
 
     void addPayment(Payment* p) {
-        if (paymentCount < 10) {
-            payments[paymentCount++] = p;
-        }
+    if (paymentCount < 10) {
+    payments[paymentCount++] = p; // Добавляем платеж в массив
+    }
     }
 
     void printAllPayments() const {
-        cout << "\nЖурнал: " << name << " (карта: " << card << ")\n";
-        cout << "Список платежей:\n";
-        for (int i = 0; i < paymentCount; i++) {
-            cout << i + 1 << ". ";
-            payments[i]->print();
-        }
+    cout << "\nЖурнал: " << name << " (карта: " << card << ")\n";
+    cout << "Список платежей:\n";
+    for (int i = 0; i < paymentCount; i++) {
+    cout << i + 1 << ". ";
+    payments[i]->print();
+    }
     }
 
-    static int getPaymentCount() { return paymentCount; }
+    // Статический метод для получения количества платежей в массиве
+    static int getPaymentCount() {
+    return paymentCount;
+    }
 };
 
+// Инициализация статического члена класса
 int AccountBook::paymentCount = 0;
 
 int main() {
+// Вывод количества созданных объектов класса Payment
+cout << "Количество созданных объектов Payment: " << Payment::getObjectCount() << endl;
+
 AccountBook book("1234 5678 9012 3456", "Иванов И.И.");
 
 // Создаем объекты разных типов
@@ -150,6 +172,11 @@ book.addPayment(p4);
 // Выводим данные из журнала
 cout << "\n=== Вывод информации из журнала ===" << endl;
 book.printAllPayments();
+
+// Вывод количества созданных объектов класса Payment
+cout << "Количество созданных объектов Payment: " << Payment::getObjectCount() << endl;
+// Вывод количества объектов в массиве основного класса
+cout << "Количество объектов в массиве: " << AccountBook::getPaymentCount() << endl;
 
 return 0;
 }
