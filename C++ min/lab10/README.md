@@ -92,6 +92,20 @@ public:
     }
 };
 
+// Новый пользовательский тип: Перевод
+class Transfer : public Payment {
+private:
+    string recipient; 
+
+public:
+    Transfer(string d, double a, string desc, string rec) 
+        : Payment(d, a, desc), recipient(rec) {}
+    void print() const override {
+        Payment::print();
+        cout << ", Получатель: " << recipient << endl;
+    }
+};
+
 // Класс-контейнер
 class Container {
 private:
@@ -123,9 +137,18 @@ public:
         }
     }
 
+    // Обычный вывод
     void printAllPayments() const {
         for (const auto& payment : payments) {
             payment->print();
+        }
+    }
+
+    // Вывод через итераторы
+    void printWithIterators() const {
+        cout << "\nПросмотр через итераторы:\n";
+        for (auto it = payments.begin(); it != payments.end(); ++it) {
+            (*it)->print();
         }
     }
 };
@@ -134,23 +157,23 @@ int main() {
     setlocale(LC_ALL, "Russian");
     Container container;
 
-    // Добавляем платежи в контейнер (создаем через new)
+    // Добавляем платежи разных типов
     container.addPayment(new Income("01.06.2023", 50000.0, "Зарплата", "Работа"));
     container.addPayment(new Expense("02.06.2023", 15000.0, "Аренда", "Жилье"));
+    container.addPayment(new Transfer("03.06.2023", 5000.0, "Перевод другу", "Алдабаева В.В."));
 
-    // Просмотр контейнера
+    // Просмотр контейнера обычным способом
     cout << "Список платежей:\n";
     container.printAllPayments();
 
-    // Изменяем один из платежей
-    container.modifyPayment(0, "01.07.2023", 55000.0, "Обновленная зарплата");
+     // Изменяем один из платежей
+    container.modifyPayment(0, "01.07.2023", 55000.0, "Повышение");
 
-    // Удаляем второй платеж
+     // Удаляем второй платеж
     container.removePayment(1);
 
-    // Смотрим обновленный список
-    cout << "\nОбновленный список платежей:\n";
-    container.printAllPayments();
+    // Просмотр через итераторы
+    container.printWithIterators();
 
     return 0;
 }
