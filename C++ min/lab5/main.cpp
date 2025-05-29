@@ -19,12 +19,12 @@ public:
 
     Payment(string d, double a, string desc) : date(d), amount(a), description(desc) {
         cout << "Платёж: конструктор с параметрами" << endl;
-        objectCount++; // Увеличиваем счётчик
+        objectCount++; 
     }
 
     Payment(const Payment &p) : date(p.date), amount(p.amount), description(p.description) {
         cout << "Платёж: конструктор копирования" << endl;
-        objectCount++; // Увеличиваем счётчик
+        objectCount++;
     }
 
     virtual ~Payment() {
