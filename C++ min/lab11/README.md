@@ -100,17 +100,17 @@ public:
 
 // Класс-наследник 1: Доходы
 class Income : public Payment {
-    public:
-        Income(string d, double a, string desc) : Payment(d, a, desc) {}
-        void print() const override {
-            cout << "Доход - ";
-            Payment::print();
-        }
+public:
+    Income(string d, double a, string desc) : Payment(d, a, desc) {}
+    void print() const override {
+        cout << "Доход - ";
+        Payment::print();
+    }
 };
 
 // Класс-наследник 2: Расходы
 class Expense : public Payment {
-    public:
+public:
     Expense(string d, double a, string desc) : Payment(d, a, desc) {}
     void print() const override {
         cout << "Расход - ";
@@ -118,32 +118,42 @@ class Expense : public Payment {
     }
 };
 
+// Функция для сравнения платежей по убыванию суммы
+bool compareDesc(Payment* a, Payment* b) {
+    return a->getAmount() > b->getAmount();
+}
+
+// Функция для сравнения платежей по возрастанию суммы
+bool compareAsc(Payment* a, Payment* b) {
+    return a->getAmount() < b->getAmount();
+}
+
 // Основной класс - Журнал учета
 class AccountBook {
-    private:
+private:
     string card;
     string name;
-    vector<Payment*> payments; 
+    vector<Payment*> payments;
 
-    public:
+public:
     AccountBook(string c, string n) : card(c), name(n) {}
     ~AccountBook() {
-    for (auto payment : payments) {
-    delete payment; 
-    }
+        for (auto payment : payments) {
+            delete payment;
+        }
     }
 
     void addPayment(Payment* p) {
-    payments.push_back(p);
+        payments.push_back(p);
     }
 
     void printAllPayments() const {
-    cout << "\nЖурнал: " << name << " (карта: " << card << ")" << endl;
-    cout << "Список платежей:\n";
-    for (size_t i = 0; i < payments.size(); i++) {
-    cout << i + 1 << ". ";
-    payments[i]->print();
-    }
+        cout << "\nЖурнал: " << name << " (карта: " << card << ")" << endl;
+        cout << "Список платежей:\n";
+        for (size_t i = 0; i < payments.size(); i++) {
+            cout << i + 1 << ". ";
+            payments[i]->print();
+        }
     }
 };
 
@@ -159,12 +169,10 @@ int main() {
     payments.push_back(new Expense("10.06.2023", 5000.0, "Продукты"));
 
     // Сортировка по убыванию суммы
-    sort(payments.begin(), payments.end(), [](Payment* a, Payment* b) {
-        return a->getAmount() > b->getAmount();
-    });
+    sort(payments.begin(), payments.end(), compareDesc);
 
     cout << "Платежи отсортированные по убыванию суммы" << endl;
-        for (auto p : payments) {
+    for (auto p : payments) {
         p->print();
     }
 
@@ -177,7 +185,7 @@ int main() {
     }
 
     cout << "\nПлатежи с суммой > 10000 руб." << endl;
-        for (auto p : largePayments) {
+    for (auto p : largePayments) {
         p->print();
     }
 
@@ -190,23 +198,19 @@ int main() {
     book.printAllPayments();
 
     // Сортировка всех платежей по возрастанию суммы
-    sort(payments.begin(), payments.end(), [](Payment* a, Payment* b) {
-        return a->getAmount() < b->getAmount();
-    });
+    sort(payments.begin(), payments.end(), compareAsc);
 
     // Сортировка большого контейнера по возрастанию суммы
-    sort(largePayments.begin(), largePayments.end(), [](Payment* a, Payment* b) {
-        return a->getAmount() < b->getAmount();
-    });
+    sort(largePayments.begin(), largePayments.end(), compareAsc);
 
     // Просмотр отсортированных платежей и крупных платежей
     cout << "\nПлатежи после сортировки по возрастанию суммы" << endl;
-        for (auto p : payments) {
+    for (auto p : payments) {
         p->print();
     }
 
     cout << "\nКрупные платежи после сортировки по возрастанию суммы" << endl;
-        for (auto p : largePayments) {
+    for (auto p : largePayments) {
         p->print();
     }
 
