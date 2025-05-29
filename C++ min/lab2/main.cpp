@@ -135,17 +135,18 @@ public:
 int AccountBook::paymentCount = 0;
 
 int main() {
+    setlocale(LC_ALL, "Russian");
     //Журнал учёта
     AccountBook book1; 
-    AccountBook book2("1234 5678 9012 3456", "Иванов И.И."); 
+    AccountBook book2("1234 5678 9012 3456", "Алдабаева В.В."); 
     AccountBook book3(book2); 
 
     //Платежи
     Payment p1; 
-    Payment p2("15.05.2023", 1500.75, "Покупка продуктов");
+    Payment p2("10.06.2023", 5000.0, "Продукты");
 
     // Добавляем платеж через конструктор с параметрами
-    book1.addNewPayment("20.05.2023", 2500.0, "Оплата услуг", 0);
+    book1.addNewPayment("02.06.2023", 15000.0, "Аренда", 0);
     
     // Добавляем копии платежа
     book1.addCopiesOfPayment(p2, 2);

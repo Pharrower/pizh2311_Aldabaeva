@@ -51,7 +51,7 @@ private:
     // Закрытые данные
     string card;
     string name;
-    Payment payments[10]; // Массив платежей
+    Payment payments[10];
 
 public:
     // Открытые методы для работы с данными

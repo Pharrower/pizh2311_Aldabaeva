@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm> // Для sort
+#include <algorithm>
 
 using namespace std;
 
@@ -21,7 +21,7 @@ public:
     double getAmount() const { return amount; }
 
     virtual void print() const {
-    cout << "Дата: " << date << ", Сумма: " << amount << ", Описание: " << description << endl;
+        cout << "Дата: " << date << ", Сумма: " << amount << ", Описание: " << description << endl;
     }
 };
 
@@ -50,13 +50,13 @@ class AccountBook {
     private:
     string card;
     string name;
-    vector<Payment*> payments; // Используем вектор
+    vector<Payment*> payments; 
 
     public:
     AccountBook(string c, string n) : card(c), name(n) {}
     ~AccountBook() {
     for (auto payment : payments) {
-    delete payment; // Освобождение памяти
+    delete payment; 
     }
     }
 
@@ -75,66 +75,67 @@ class AccountBook {
 };
 
 int main() {
-AccountBook book("1234 5678 9012 3456", "Иванов И.И.");
+    setlocale(LC_ALL, "Russian");
+    AccountBook book("1234 5678 9012 3456", "Алдабаева В.В.");
 
-// Создаем и заполняем вектор платежей
-vector<Payment*> payments;
-payments.push_back(new Income("01.06.2023", 50000.0, "Зарплата"));
-payments.push_back(new Expense("02.06.2023", 15000.0, "Аренда"));
-payments.push_back(new Income("05.06.2023", 10000.0, "Фриланс"));
-payments.push_back(new Expense("10.06.2023", 5000.0, "Продукты"));
+    // Создаем и заполняем вектор платежей
+    vector<Payment*> payments;
+    payments.push_back(new Income("01.06.2023", 50000.0, "Зарплата"));
+    payments.push_back(new Expense("02.06.2023", 15000.0, "Аренда"));
+    payments.push_back(new Income("05.06.2023", 10000.0, "Фриланс"));
+    payments.push_back(new Expense("10.06.2023", 5000.0, "Продукты"));
 
-// 1. Сортировка по убыванию суммы
-sort(payments.begin(), payments.end(), [](Payment* a, Payment* b) {
-return a->getAmount() > b->getAmount();
-});
+    // Сортировка по убыванию суммы
+    sort(payments.begin(), payments.end(), [](Payment* a, Payment* b) {
+        return a->getAmount() > b->getAmount();
+    });
 
-cout << "=== Платежи отсортированные по убыванию суммы ===" << endl;
-for (auto p : payments) {
-p->print();
-}
+    cout << "=== Платежи отсортированные по убыванию суммы ===" << endl;
+        for (auto p : payments) {
+        p->print();
+    }
 
-// 2. Поиск платежей больше 10000 руб.
-vector<Payment*> largePayments;
-for (auto p : payments) {
-if (p->getAmount() > 10000) {
-largePayments.push_back(p);
-}
-}
+    // Поиск платежей больше 10000 руб.
+    vector<Payment*> largePayments;
+    for (auto p : payments) {
+        if (p->getAmount() > 10000) {
+            largePayments.push_back(p);
+        }
+    }
 
-cout << "\n=== Платежи с суммой > 10000 руб. ===" << endl;
-for (auto p : largePayments) {
-p->print();
-}
+    cout << "\n=== Платежи с суммой > 10000 руб. ===" << endl;
+        for (auto p : largePayments) {
+        p->print();
+    }
 
-// 3. Добавление всех платежей в журнал
-for (auto p : payments) {
-book.addPayment(p);
-}
+    // Добавление всех платежей в журнал
+    for (auto p : payments) {
+        book.addPayment(p);
+    }
 
-cout << "\n=== Содержимое журнала после добавления ===" << endl;
-book.printAllPayments();
+    cout << "\n=== Содержимое журнала после добавления ===" << endl;
+    book.printAllPayments();
 
-// 4. Сортировка всех платежей по возрастанию суммы
-sort(payments.begin(), payments.end(), [](Payment* a, Payment* b) {
-return a->getAmount() < b->getAmount();
-});
+    // Сортировка всех платежей по возрастанию суммы
+    sort(payments.begin(), payments.end(), [](Payment* a, Payment* b) {
+        return a->getAmount() < b->getAmount();
+    });
 
-// 5. Сортировка большого контейнера по возрастанию суммы
-sort(largePayments.begin(), largePayments.end(), [](Payment* a, Payment* b) {
-return a->getAmount() < b->getAmount();
-});
+    // Сортировка большого контейнера по возрастанию суммы
+    sort(largePayments.begin(), largePayments.end(), [](Payment* a, Payment* b) {
+        return a->getAmount() < b->getAmount();
+    });
 
-// 6. Просмотр отсортированных платежей и крупных платежей
-cout << "\n=== Платежи после сортировки по возрастанию суммы ===" << endl;
-for (auto p : payments) {
-p->print();
-}
+    // Просмотр отсортированных платежей и крупных платежей
+    cout << "\n=== Платежи после сортировки по возрастанию суммы ===" << endl;
+        for (auto p : payments) {
+        p->print();
+    }
 
-cout << "\n=== Крупные платежи после сортировки по возрастанию суммы ===" << endl;
-for (auto p : largePayments) {
-p->print();
-}
+    cout << "\n=== Крупные платежи после сортировки по возрастанию суммы ===" << endl;
+        for (auto p : largePayments) {
+        p->print();
+    }
 
-return 0;
+    return 0;
 }

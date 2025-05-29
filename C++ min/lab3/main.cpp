@@ -155,12 +155,13 @@ public:
 int AccountBook::paymentCount = 0;
 
 int main() {
-    AccountBook book("1234 5678 9012 3456", "Иванов И.И.");
+    setlocale(LC_ALL, "Russian");
+    AccountBook book("1234 5678 9012 3456", "Алдабаева В.В.");
 
     // Создаем объекты разных типов
     Payment* p1 = new Income("01.06.2023", 50000.0, "Зарплата", "Работа");
     Payment* p2 = new Expense("02.06.2023", 15000.0, "Аренда", "Жилье");
-    Payment* p3 = new Payment("03.06.2023", 5000.0, "Прочий платеж");
+    Payment* p3 = new Expense("10.06.2023", 5000.0, "Продукты", "Еда");
     Payment* p4 = new Income("04.06.2023", 10000.0, "Фриланс", "Подработка");
 
     // Добавляем платежи в журнал
@@ -193,7 +194,7 @@ int main() {
         }
     }
 
-    cout << "\n=== Вывод информации из журнала ===" << endl;
+    cout << "\nВывод информации из журнала" << endl;
     book.printAllPayments();
 
     return 0;

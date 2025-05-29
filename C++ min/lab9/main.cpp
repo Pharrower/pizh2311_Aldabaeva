@@ -150,12 +150,13 @@ vector<Payment*> loadFromFile(const string& filename) {
 }
 
 int main() {
+    setlocale(LC_ALL, "Russian");
     vector<Payment*> payments;
 
     // Добавление платежей
-    payments.push_back(new Income("01.06.2023", 50000, "Зарплата", "Компания"));
-    payments.push_back(new Expense("02.06.2023", 15000, "Аренда", "Жилье"));
-    payments.push_back(new Income("05.06.2023", 10000, "Фриланс", "Проект"));
+    payments.push_back(new Income("01.06.2023", 50000.0, "Зарплата", "Работа"));
+    payments.push_back(new Expense("02.06.2023", 15000.0, "Аренда", "Жилье"));
+    payments.push_back(new Income("04.06.2023", 10000.0, "Фриланс", "Подработка"));
 
     // 1. Сохранение в файл
     saveToFile(payments, "payments.txt");
